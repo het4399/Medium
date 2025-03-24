@@ -3,7 +3,12 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, sign, verify } from "hono/jwt";
 
-const app = new Hono();
+const app = new Hono<{
+  Bindings: {
+    DATABASE_URL: string;
+    JWT_secret: string;
+  };
+}>();
 app.use("/api/v1/blog/*", async (c, next) => {
   const authorization = c.req.header("authorization");
   if (!authorization) {
@@ -11,7 +16,7 @@ app.use("/api/v1/blog/*", async (c, next) => {
     return c.json({ message: "Missing authorization header" });
   }
   const token = authorization.split(" ")[1];
-  //@ts-ignore
+
   const user = await verify(token, c.env.JWT_secret);
   if (user.id) {
     next();
@@ -23,7 +28,6 @@ app.use("/api/v1/blog/*", async (c, next) => {
 app.post("/api/v1/user/signup", async (c) => {
   const body = await c.req.json();
   const prisma = new PrismaClient({
-    //@ts-ignore
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
@@ -41,14 +45,13 @@ app.post("/api/v1/user/signup", async (c) => {
   // if (!jwtSecret) {
   //   throw new Error("JWT secret is not defined");
   // }
-  //@ts-ignore
+
   const token: String = await sign(payload, c.env.JWT_secret);
   return c.json({ token: token });
 });
 
 app.post("/api/v1/user/signin", async (c) => {
   const prisma = new PrismaClient({
-    //@ts-ignore
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
@@ -61,7 +64,7 @@ app.post("/api/v1/user/signin", async (c) => {
   const payload = {
     id: user.id,
     role: "user",
-  }; //@ts-ignore
+  };
   const token: string = await sign(payload, c.env.JWT_secret);
 
   return c.json({ token: token });
