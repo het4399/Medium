@@ -6,6 +6,7 @@ export const blogRouter = new Hono<{
     JWT_secret: string;
   };
 }>();
+
 blogRouter.use("/*", async (c, next) => {
   const authorization = c.req.header("authorization");
   if (!authorization) {
