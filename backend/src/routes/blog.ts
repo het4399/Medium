@@ -1,9 +1,15 @@
+import { PrismaClient } from "@prisma/client/edge";
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
+import { withAccelerate } from "@prisma/extension-accelerate";
+import { CreateBloginput, UpdateBloginput, UpdateBlogInput } from "@het4399/common";
 export const blogRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_secret: string;
+  };
+  Variables: {
+    userId: string;
   };
 }>();
 
@@ -15,29 +21,83 @@ blogRouter.use("/*", async (c, next) => {
   }
   const token = authorization.split(" ")[1];
 
-  const user = await verify(token, c.env.JWT_secret);
-  if (user.id) {
-    next();
-  } else {
+  try {
+    const user = await verify(token, c.env.JWT_secret);
+    if (user) {
+      c.set("userId", user.id as string);
+      await next();
+    } else {
+      c.status(403);
+      return c.json({ message: "Invalid token" });
+    }
+  } catch (err) {
     c.status(403);
-    return c.json({ message: "Invalid token" });
+    return c.json({ message: "You are not Logged In" });
   }
 });
 
-blogRouter.post("/", (c) => {
-  return c.text("Hello from blog!");
+blogRouter.post("/", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const body = await c.req.json();
+  const { success, error } = CreateBloginput.safeParse(body);
+  if (!success) {
+    c.status(400);
+    return c.json({ message: error.toString() });
+  }
+  const userId = c.get("userId");
+  const response = await prisma.blog.create({
+    data: {
+      title: body.title,
+      content: body.content,
+      authorId: userId,
+    },
+  });
+  c.status(200);
+  return c.json({ response: response.id });
 });
 
-blogRouter.put("/", (c) => {
-  return c.text("Hello from blog delete route!");
+blogRouter.put("/", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const body = await c.req.json();
+  const { success, error } = UpdateBloginput.safeParse(body);
+  if (!success) {
+    c.status(400);
+    return c.json({ message: error.toString() });
+  }
+  const userId = c.get("userId");
+  const response = await prisma.blog.update({
+    where: { id: body.id },
+    data: {
+      title: body.title,
+      content: body.content,
+    },
+  });
+  c.status(200);
+  return c.json({ response: response.id });
 });
 
-blogRouter.get("/:id", (c) => {
-  const id = c.req.param("id");
-  console.log(id);
-  return c.text("Hello from blog id!");
+blogRouter.get("/", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const body = await c.req.json();
+
+  const response = await prisma.blog.findMany({
+    where: { id: body.id },
+  });
+  c.status(200);
+  return c.json({ response });
 });
 
-blogRouter.get("/bulk", (c) => {
-  return c.text("Hello from blog bulk route!");
+blogRouter.get("/bulk", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const response = await prisma.blog.findMany();
+  c.status(200);
+  return c.json({ response });
 });
