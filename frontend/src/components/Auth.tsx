@@ -3,7 +3,7 @@ import axios from "axios";
 import { ChangeEventHandler, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { BACKEND_URL } from "../src/config";
+import { BACKEND_URL } from "../config";
 export function Auth({ type }: { type: "signup" | "signin" }) {
     const [postInputs, setPostInput] = useState<SignUpInput>({
         email: "",
