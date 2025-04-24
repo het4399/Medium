@@ -8,18 +8,24 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  email    String   @unique
-  name     String?
-  password String
-  blogs    Blog[]
+  id            String  @id @default(uuid())
+  email         String  @unique
+  name          String?
+  password      String
+  blogs         Blog[]
+  likedBlogs    Blog[]  @relation("BlogLikes")
+  dislikedBlogs Blog[]  @relation("BlogDislikes")
 }
 
 model Blog {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
+  id            String    @id @default(uuid())
+  title         String
+  content       String
+  published     Boolean   @default(false)
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      String
+  createdAt     DateTime  @default(now())
+  publishedDate DateTime?
+  likes         User[]    @relation("BlogLikes")
+  dislikes      User[]    @relation("BlogDislikes")
 }
