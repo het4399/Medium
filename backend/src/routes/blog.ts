@@ -19,7 +19,7 @@ blogRouter.use("/*", async (c, next) => {
     c.status(401);
     return c.json({ message: "Missing authorization header" });
   }
-  const token = authorization.split(" ")[1];
+  const token = authorization;
 
   try {
     const user = await verify(token, c.env.JWT_secret);
@@ -85,15 +85,16 @@ blogRouter.get("/bulk", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const response = await prisma.blog.findMany({
-    select:{
-        content:true,
-        title:true,
-        author: {
-            select:{
-                name:true
-            }
-        }
-    }
+    select: {
+      id: true,
+      content: true,
+      title: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
   c.status(200);
   return c.json({ response });
@@ -105,8 +106,18 @@ blogRouter.get("/:id", async (c) => {
   }).$extends(withAccelerate());
   const id = c.req.param("id");
 
-  const response = await prisma.blog.findMany({
+  const response = await prisma.blog.findFirst({
     where: { id: id },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
   c.status(200);
   return c.json({ response });
