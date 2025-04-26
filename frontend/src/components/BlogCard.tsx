@@ -1,46 +1,46 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-interface BlogCardProps {
-    authorName: string;
+export interface BlogCardProps {
     title: string;
     content: string;
+    authorName: string;
     publishedDate: string;
     id: string;
     likeCount: number;
     dislikeCount: number;
-
 }
 
-export function BlogCards({
-    id,
-    authorName,
-    title,
-    content,
-    publishedDate,
-    likeCount,
-    dislikeCount
-}: BlogCardProps) {
+export const BlogCard = ({ id, title, content, authorName, publishedDate, likeCount, dislikeCount }: BlogCardProps) => {
+
     const [isHovered, setIsHovered] = useState(false);
 
-    return <>
-        <Link to={`/blog/${id}`} className="block" onMouseEnter={() => setIsHovered(true)}
+    return (
+        <Link to={`/blog/${id}`} className="block"
+            onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onTouchStart={() => setIsHovered(true)} // Mobile touch support
-            onTouchEnd={() => setIsHovered(false)}>
+            onTouchEnd={() => setIsHovered(false)} // Reset animation on touch end
+        >
             <div className={`w-full max-w-screen-lg bg-[#23324a] border border-[#2e3978] rounded-xl p-5 shadow-lg shadow-slate-900/30 transition-transform duration-300 
                 ${isHovered ? "scale-[1.03] hover:shadow-indigo-500/60 active:scale-[1.03] active:shadow-indigo-500/60" : ""}`}
             >
+
+                {/* Author Section */}
                 <div className="flex items-center space-x-3">
                     <Avatar size="small" name={authorName} />
                     <div className="font-semibold text-gray-200">{authorName}</div>
                     <Circle />
                     <div className="text-gray-400 text-sm">{publishedDate}</div>
                 </div>
+
+                {/* Blog Title & Content */}
                 <div className="mt-4 text-xl font-bold text-gray-100 truncate">{title}</div>
                 <div className="mt-2 text-gray-300 text-base break-words">
                     {content.length > 150 ? content.slice(0, 150) + "..." : content}
                 </div>
+
+                {/* Reading Time & Like/Dislike Section */}
                 <div className="flex justify-between mt-4 text-xs">
                     <div className="text-gray-400/60">{`${Math.ceil(content.length / 200)} min read`}</div>
                     <div className="flex space-x-2 text-indigo-400/65">
@@ -60,25 +60,28 @@ export function BlogCards({
                 </div>
             </div>
         </Link>
-    </>
-}
+    );
+};
 
+// Small Circle Separator Component
 export function Circle() {
-    return <div className="h-1 w-1 rounded-full bg-slate-500">
-
-    </div>
+    return <div className="h-1 w-1 rounded-full bg-gray-500"></div>;
 }
 
-export function Avatar({ name, size = "small" }: { name: string, size?: "small" | "big" }) {
-    return <div className={`relative inline-flex items-center justify-center overflow-hidden bg-[#1b2941] rounded-full 
-        ${size === "small" ? "w-9 h-9" : "w-14 h-14"}`}
-    >
-        <span className={`${size === "small" ? "text-sm" : "text-lg"} font-serif text-white`}>
-            {name[0]}
-        </span>
-    </div>
+// Avatar Component (Displays first letter of author's name)
+export function Avatar({ name, size = "small" }: { name: string; size: "small" | "big" }) {
+    return (
+        <div className={`relative inline-flex items-center justify-center overflow-hidden bg-[#1b2941] rounded-full 
+            ${size === "small" ? "w-9 h-9" : "w-14 h-14"}`}
+        >
+            <span className={`${size === "small" ? "text-sm" : "text-lg"} font-serif text-white`}>
+                {name[0].toUpperCase()}
+            </span>
+        </div>
+    );
 }
 
+// Like Icon Component
 export function LikeIcon() {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
@@ -87,7 +90,6 @@ export function LikeIcon() {
 
     );
 }
-
 
 // Dislike Icon Component
 export function DislikeIcon() {
