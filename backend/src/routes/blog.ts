@@ -14,6 +14,11 @@ export const blogRouter = new Hono<{
 }>();
 
 blogRouter.use("/*", async (c, next) => {
+  const publicRoutes = ["/", "/api/v1/blog/bulk"];
+
+  if (publicRoutes.includes(c.req.path)) {
+    return next();
+  }
   const authorization = c.req.header("authorization");
   if (!authorization) {
     c.status(401);
@@ -91,7 +96,7 @@ blogRouter.get("/bulk", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   try {
-    const response = await prisma.blog.findMany({
+    const blogs = await prisma.blog.findMany({
       select: {
         id: true,
         content: true,
@@ -112,7 +117,7 @@ blogRouter.get("/bulk", async (c) => {
       },
     });
     c.status(200);
-    return c.json({ response });
+    return c.json({ blogs });
   } catch (e) {
     console.error("Error fetching blog posts: ", e);
     c.status(500);
@@ -136,6 +141,7 @@ blogRouter.get("/:id", async (c) => {
         author: {
           select: {
             name: true,
+            id:true
           },
         },
         likes: {
@@ -171,95 +177,130 @@ blogRouter.get("/:id", async (c) => {
   }
 });
 
-
-
-blogRouter.put('/like/:id', async (c) => {
+blogRouter.put("/like/:id", async (c) => {
   const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
-  const blogId = c.req.param('id');
+  const blogId = c.req.param("id");
   const userId = c.get("userId");
 
   try {
-      const blog = await prisma.blog.findUnique({
-          where: { id: blogId },
-          include: { likes: true, dislikes: true }
-      });
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+      include: { likes: true, dislikes: true },
+    });
 
-      if (!blog) {
-          c.status(404);
-          return c.json({ message: "Blog not found" });
-      }
+    if (!blog) {
+      c.status(404);
+      return c.json({ message: "Blog not found" });
+    }
 
-      // Remove from dislikes if present
+    // Remove from dislikes if present
+    await prisma.blog.update({
+      where: { id: blogId },
+      data: { dislikes: { disconnect: { id: userId } } },
+    });
+
+    // Toggle like status
+    const isLiked = blog.likes.some((user) => user.id === userId);
+    if (isLiked) {
       await prisma.blog.update({
-          where: { id: blogId },
-          data: { dislikes: { disconnect: { id: userId } } }
+        where: { id: blogId },
+        data: { likes: { disconnect: { id: userId } } },
       });
-
-      // Toggle like status
-      const isLiked = blog.likes.some(user => user.id === userId);
-      if (isLiked) {
-          await prisma.blog.update({
-              where: { id: blogId },
-              data: { likes: { disconnect: { id: userId } } }
-          });
-          return c.json({ message: "Like removed" });
-      } else {
-          await prisma.blog.update({
-              where: { id: blogId },
-              data: { likes: { connect: { id: userId } } }
-          });
-          return c.json({ message: "Blog liked" });
-      }
-
+      return c.json({ message: "Like removed" });
+    } else {
+      await prisma.blog.update({
+        where: { id: blogId },
+        data: { likes: { connect: { id: userId } } },
+      });
+      return c.json({ message: "Blog liked" });
+    }
   } catch (e) {
-      console.error("Error liking blog:", e);
-      c.status(500);
-      return c.json({ message: "Error liking blog" });
+    console.error("Error liking blog:", e);
+    c.status(500);
+    return c.json({ message: "Error liking blog" });
+  }
+});
+
+blogRouter.put("/dislike/:id", async (c) => {
+  const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
+  const blogId = c.req.param("id");
+  const userId = c.get("userId");
+
+  try {
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+      include: { likes: true, dislikes: true },
+    });
+
+    if (!blog) {
+      c.status(404);
+      return c.json({ message: "Blog not found" });
+    }
+
+    // Remove from likes if present
+    await prisma.blog.update({
+      where: { id: blogId },
+      data: { likes: { disconnect: { id: userId } } },
+    });
+
+    // Toggle dislike status
+    const isDisliked = blog.dislikes.some((user) => user.id === userId);
+    if (isDisliked) {
+      await prisma.blog.update({
+        where: { id: blogId },
+        data: { dislikes: { disconnect: { id: userId } } },
+      });
+      return c.json({ message: "Dislike removed" });
+    } else {
+      await prisma.blog.update({
+        where: { id: blogId },
+        data: { dislikes: { connect: { id: userId } } },
+      });
+      return c.json({ message: "Blog disliked" });
+    }
+  } catch (e) {
+    console.error("Error disliking blog:", e);
+    c.status(500);
+    return c.json({ message: "Error disliking blog" });
   }
 });
 
 
-blogRouter.put('/dislike/:id', async (c) => {
+// Route to update an existing blog
+blogRouter.put('/update/:id', async (c) => {
   const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
   const blogId = c.req.param('id');
+  const body = await c.req.json();
   const userId = c.get("userId");
 
-  try {
-      const blog = await prisma.blog.findUnique({
-          where: { id: blogId },
-          include: { likes: true, dislikes: true }
-      });
+  const { success } = CreateBloginput.safeParse(body);
+  if (!success) {
+      c.status(411);
+      return c.json({ message: "Invalid input format" });
+  }
 
-      if (!blog) {
+  try {
+      const existingBlog = await prisma.blog.findUnique({ where: { id: blogId } });
+      if (!existingBlog) {
           c.status(404);
           return c.json({ message: "Blog not found" });
       }
 
-      // Remove from likes if present
-      await prisma.blog.update({
-          where: { id: blogId },
-          data: { likes: { disconnect: { id: userId } } }
-      });
-
-      // Toggle dislike status
-      const isDisliked = blog.dislikes.some(user => user.id === userId);
-      if (isDisliked) {
-          await prisma.blog.update({
-              where: { id: blogId },
-              data: { dislikes: { disconnect: { id: userId } } }
-          });
-          return c.json({ message: "Dislike removed" });
-      } else {
-          await prisma.blog.update({
-              where: { id: blogId },
-              data: { dislikes: { connect: { id: userId } } }
-          });
-          return c.json({ message: "Blog disliked" });
+      // Check if the current user is the author of the blog
+      if (existingBlog.authorId !== userId) {
+          c.status(403);
+          return c.json({ message: "You do not have permissions to update this blog" });
       }
 
+      // Update the blog
+      const updatedBlog = await prisma.blog.update({
+          where: { id: blogId },
+          data: { title: body.title, content: body.content }
+      });
+      return c.json({ message: "Blog updated successfully!", blog: updatedBlog });
   } catch (e) {
-      console.error("Error disliking blog:", e);
+      console.error("Error updating blog:", e);
       c.status(500);
-      return c.json({ message: "Error disliking blog" });
+      return c.json({ message: "Failed to update the blog" });
   }
 });

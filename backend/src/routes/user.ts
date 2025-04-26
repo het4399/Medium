@@ -120,7 +120,7 @@ userRouter.get("/profile", async (c) => {
     }
 
     // Return the user's details (modify as needed if you store an email)
-    return c.json({ user: { name: user.name, username: user.email } });
+    return c.json({ user: { name: user.name, email: user.email } });
   } catch (e) {
     c.status(403);
     return c.json({ message: "Authorization failed" });
@@ -158,7 +158,7 @@ userRouter.put("/setting", async (c) => {
 
     const updateData: any = {};
     if (body.name) updateData.name = body.name;
-    if (body.username) updateData.username = body.username;
+    if (body.email) updateData.email = body.email;
     if (body.password) updateData.password = body.password;
 
     const updatedUser = await prisma.user.update({
