@@ -84,7 +84,7 @@ export function Auth() {
             </div>
 
             {/* Header Section */}
-            <h1 className="text-4xl font-extrabold pb-1 bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 text-transparent bg-clip-text text-center">Blogsy</h1>
+            <h1 className="text-4xl font-extrabold pb-1 bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 text-transparent bg-clip-text text-center">BlogBox</h1>
 
             {/* Sign-in Redirect */}
             <p className="text-gray-400 text-sm mt-2 text-center"> Already have an account?{" "}
@@ -131,7 +131,7 @@ export function Auth() {
             {/* About Us */}
             <motion.div className="mt-4 text-center text-xs text-gray-400"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                <p>© 2025 Blogsy. All rights reserved.</p>
+                <p>© 2025 BlogBox. All rights reserved.</p>
                 <Link to="/about" className="text-indigo-400 hover:underline">About Us</Link>
             </motion.div>
         </motion.div>

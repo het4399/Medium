@@ -25,7 +25,7 @@ export const AboutUs = () => {
                         >
                             {/* Heading */}
                             <h1 className="text-2xl md:text-4xl font-extrabold text-gray-100">
-                                Welcome to <span className="text-indigo-400 font-extrabold">Blogsy!</span>
+                                Welcome to <span className="text-indigo-400 font-extrabold">BlogBox!</span>
                             </h1>
 
                             {/* Description */}
@@ -34,7 +34,7 @@ export const AboutUs = () => {
                             </p>
 
                             <p className="mt-4 text-gray-300 leading-relaxed text-base max-w-6xl">
-                                Blogsy was created by <span className="text-indigo-400 font-bold">Het Sojitra</span>, a developer passionate about building meaningful digital experiences. If you're interested in the source code, feel free to check out the project on GitHub. 🚀
+                                BlogBox was created by <span className="text-indigo-400 font-bold">Het Sojitra</span>, a developer passionate about building meaningful digital experiences. If you're interested in the source code, feel free to check out the project on GitHub. 🚀
                             </p>
 
                             {/* Profile and GitHub Link */}

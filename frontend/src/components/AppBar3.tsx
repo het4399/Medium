@@ -1,10 +1,8 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ThemeToggle } from "./ThemeToggle";
-const toggle = () => {
-    document.body.classList.toggle('dark');
-};
+
+
 export const AppBar3 = () => {
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -42,7 +40,7 @@ export const AppBar3 = () => {
                     className={`text-xl font-bold tracking-wide ${isScrolled ? "text-indigo-400" : "bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 bg-clip-text text-transparent"
                         } transition-all duration-300`}
                 >
-                    Blogsy
+                    BlogBox
                 </span>
             </div>
             {/* <ThemeToggle /> */}

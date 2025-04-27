@@ -25,7 +25,7 @@ import { LabelInput } from "./Auth";
             localStorage.setItem("token", res.data.token);
             navigate("/blogs");
         } catch (e: any) {
-            if (e.response?.data?.error === "User not found") setUsernameError("User not found");
+            if (e.response?.data?.message === "User Not found") setUsernameError("User not found");
             else if (e.response?.data?.message === "Invalid password") setPasswordError("Incorrect password");
             else setSigninError("Sign-in Failed. Please try again.");
         } finally {
@@ -61,7 +61,7 @@ import { LabelInput } from "./Auth";
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl font-extrabold pb-1 bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 text-transparent bg-clip-text text-center">Blogsy</h1>
+            <h1 className="text-4xl font-extrabold pb-1 bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 text-transparent bg-clip-text text-center">BlogBox</h1>
 
             {/* Signup Link */}
             <p className="text-gray-400 text-sm mt-2 text-center">
@@ -97,7 +97,7 @@ import { LabelInput } from "./Auth";
             {/* About Us */}
             <motion.div className="mt-4 text-center text-xs text-gray-400"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                <p>© 2025 Blogsy. All rights reserved.</p>
+                <p>© 2025 BlogBox. All rights reserved.</p>
                 <Link to="/about" className="text-indigo-400 hover:underline">About Us</Link>
             </motion.div>
         </motion.div>

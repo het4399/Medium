@@ -99,7 +99,7 @@ export const Appbar = () => {
                                 : "bg-gradient-to-b from-blue-600/95 via-blue-200 to-white/90 text-transparent bg-clip-text"
                                 }`}
                         >
-                            Blogsy
+                            BlogBox
                         </Link>
 
                     </div>
