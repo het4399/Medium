@@ -1,5 +1,3 @@
-
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { RefObject } from "react";
 import { FloatingCard } from "./FloatingCard";
@@ -23,7 +21,7 @@ export default function HeroSection({ blogSliderRef }: HeroSectionProps) {
                 <Blob_Home />
             </div>
 
-            <div className="relative z-5 flex flex-col items-center text-center justify-center min-h-screen">
+            <div className="z-5 flex flex-col items-center text-center justify-center min-h-screen">
                 {/* Animated Heading */}
                 <TypewriterHero
                     title="Your"
@@ -34,11 +32,11 @@ export default function HeroSection({ blogSliderRef }: HeroSectionProps) {
                     pauseDuration={2000}
                 />
                 {/* Call to Action Buttons */}
-                <div className="mt-4 md:mt-6 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 text-center">
+                <div className="mt-4 md:mt-6 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 text-center z-10">
                     {/* Button 1: Start Writing */}
                     <Link
                         to="/signup"
-                        className="px-5 md:px-6 py-2 md:py-3 focus:hover:scale-100 bg-gradient-to-br hover:from-cyan-600 hover:to-indigo-600 from-cyan-600/90 to-indigo-600/90 rounded-lg md:rounded-xl text-white font-semibold text-base md:text-lg shadow-md transition-transform duration-300 hover:scale-110 flex items-center justify-center"
+                        className=" px-5 md:px-6 py-2 md:py-3 focus:hover:scale-100 bg-gradient-to-br hover:from-cyan-600 hover:to-indigo-600 from-cyan-600/90 to-indigo-600/90 rounded-lg md:rounded-xl text-white font-semibold text-base md:text-lg shadow-md transition-transform duration-300 hover:scale-110 flex items-center justify-center"
                     >
                         Start Writing
                     </Link>

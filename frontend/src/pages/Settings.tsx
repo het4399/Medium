@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useSettings } from "../hooks";
 import { Appbar } from "../components/Appbar";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Settings = () => {
   const { updateSettings, updateLoading, settingsLoading, error, success, settings } = useSettings();
@@ -126,12 +126,7 @@ export const Settings = () => {
               {/* Display success message */}
               {success && <p className="text-green-400 text-center mt-3">Changes applied successfully!</p>}
 
-              <div className="mt-5 text-center text-sm space-x-1 text-gray-400 flex justify-center">
-                <p>Want to <span className="text-red-400">delete</span> your account?</p>
-                <Link to="/delete" className="text-gray-300 hover:underline">
-                  click here
-                </Link>
-              </div>
+            
 
             </motion.div>
           </motion.div>

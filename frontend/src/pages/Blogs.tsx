@@ -77,7 +77,7 @@ export function Blogs() {
             </div >
             <div className="flex justify-center items-center space-x-2 text-xs text-gray-300 py-6 opacity-80">
                 <div className="pointer-events-none">
-                    <span>Created by Het Sojitra on Jan 14, 2025</span>
+                    <span>Created by Het Sojitra on 4th April, 2025</span>
                 </div>
                 <Link to="/about">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 text-indigo-200 transition duration-300 hover:scale-110 hover:text-indigo-400">
