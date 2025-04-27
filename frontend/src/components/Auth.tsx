@@ -139,7 +139,7 @@ export function Auth() {
 };
 interface LabelInputType {
     label: string;
-    onchange: (e: ChangeEventHandler<HTMLInputElement>) => void;
+    onchange: ChangeEventHandler<HTMLInputElement>;
     placeholder: string;
     type?: string;
 }

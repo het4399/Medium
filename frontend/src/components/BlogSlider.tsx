@@ -1,4 +1,4 @@
-import { Blog, useBlogsHome } from "../Hooks";
+import { Blog, useBlogsHome } from "../hooks";
 import { BlogCard } from "./BlogCard.tsx";
 import { useEffect, useRef } from "react";
 
