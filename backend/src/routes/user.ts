@@ -72,7 +72,7 @@ userRouter.post("/signin", async (c) => {
   }
   //verify Password
   const ValidPass = await prisma.user.findUnique({ where: { email: body.email, password: body.password } });
-  if (!user) {
+  if (!ValidPass) {
     c.status(401);
     return c.json({ message: "Invalid password" });
   }
