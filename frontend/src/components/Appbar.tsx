@@ -6,7 +6,7 @@ import { useUserProfile } from "../hooks";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const Appbar = () => {
-    console.log(BACKEND_URL);
+   
     
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);

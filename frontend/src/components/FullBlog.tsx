@@ -28,7 +28,6 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
     }
     // Check if the current user is the blog's owner
     const isOwner = currentUserId === blog.author.id;
-    console.log(isOwner);
     
 
     return <div className="bg-[#0f172a] min-h-screen text-gray-200">

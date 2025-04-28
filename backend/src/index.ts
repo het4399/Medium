@@ -6,11 +6,24 @@ import { cors } from "hono/cors";
 
 const app = new Hono<{
   Bindings: {
+    NODE_ENV: string;
     DATABASE_URL: string;
     JWT_secret: string;
+    PROD_CORS_ORIGIN: string;
   };
 }>();
-app.use('/*',cors());
+app.use("/*", async (c, next) => {
+  const isDevelopment = c.env.NODE_ENV === "development";
+  const corsOptions = {
+    origin: isDevelopment ? "*" : c.env.PROD_CORS_ORIGIN, // Allow all origins in dev, use prod domain in prod
+  };
+
+  return cors(corsOptions)(c, next);
+});
+
+app.get("/", (c) => {
+  return c.json({ message: "CORS is working!" });
+});
 app.route("/api/v1/users", userRouter);
 app.route("/api/v1/blog", blogRouter);
 
