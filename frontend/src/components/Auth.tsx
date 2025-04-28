@@ -3,9 +3,11 @@ import axios from "axios";
 import { ChangeEventHandler, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BACKEND_URL } from "../config";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function Auth() {
+    console.log(BACKEND_URL);
+    
     const [postInputs, setPostInput] = useState<SignUpInput>({
         email: "",
         password: "",

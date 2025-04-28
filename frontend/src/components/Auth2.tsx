@@ -2,7 +2,7 @@ import { SignUpInput } from "@het4399/common";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BACKEND_URL } from "../config";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 import { motion } from "framer-motion";
 import { LabelInput } from "./Auth";
 

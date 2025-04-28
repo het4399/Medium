@@ -3,9 +3,11 @@ import { Avatar } from "./BlogCards"
 import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect, } from "react";
 import { useUserProfile } from "../hooks";
-import { BACKEND_URL } from "../config";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const Appbar = () => {
+    console.log(BACKEND_URL);
+    
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);

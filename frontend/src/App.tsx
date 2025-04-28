@@ -10,7 +10,6 @@ import { Settings } from './pages/Settings'
 import { Profile } from './pages/Profile'
 import { Update } from './pages/Update'
 
-
 function App() {
 
   return (

@@ -1,6 +1,6 @@
 import { Appbar } from "../components/Appbar"
 import axios from "axios";
-import { BACKEND_URL } from "../config";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, ChangeEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
