@@ -15,9 +15,11 @@ const app = new Hono<{
 app.use("/*", async (c, next) => {
   const isDevelopment = c.env.NODE_ENV === "development";
   const corsOptions = {
-    origin: isDevelopment ? "*" : c.env.PROD_CORS_ORIGIN, // Allow all origins in dev, use prod domain in prod
+    origin: isDevelopment ? "*" : c.env.PROD_CORS_ORIGIN, 
+    methods: ["GET", "POST", "PUT"], 
+    allowedHeaders: ["Content-Type", "Authorization"], 
+    credentials: true, 
   };
-
   return cors(corsOptions)(c, next);
 });
 
